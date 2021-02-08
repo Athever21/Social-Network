@@ -1,0 +1,87 @@
+@import "../../../Vars.scss";
+
+.admin {
+  margin-top: 4rem;
+  width: 100%;
+
+  .change-view {
+    display: flex;
+    justify-content: center;
+    
+    .change {
+      margin: 0.5rem;
+      padding: 0.5rem;
+      background: $dark-3;
+    }
+
+    .change:hover {
+      cursor: pointer;
+      background: lighten($dark-3,5);
+    }
+  }
+
+  .admin-posts,.admin-users,.admin-files {
+    width: 100%;
+    padding: 0.5rem;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+
+    .admin-post,.admin-user,.admin-file {
+      margin: 0.5rem;
+      width: 15%;
+      display: flex;
+      flex-direction: column;
+      background: $dark-3;
+
+      p {
+        text-align: center;
+        padding: 0.5rem;
+      }
+
+      .images {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+
+        img {
+          width: 50%;
+        }
+      }
+
+      button {
+        background: $logout;
+        border: 1px solid darken($logout,5);
+        padding: 0.5rem;
+      }
+
+
+      button:hover {
+        background: lighten($logout,5);
+        cursor: pointer;
+      }
+    }
+
+    .with-img {
+      width: 25%;
+    }
+  }
+
+  .load-more {
+    color: $pallet3;
+  }
+
+  .load-more:hover {
+    color: lighten($pallet3, 5);
+    cursor: pointer;
+  }
+
+
+  .admin-user {
+    text-align: center;
+
+    h3 {
+      padding: 1rem;
+    }
+  }
+}

@@ -1,0 +1,306 @@
+@import "../../../Vars.scss";
+
+header {
+  position: fixed;
+  width: 100%;
+  background: $dark-2;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 4rem;
+  z-index: 10;
+
+  .load-more {
+    color: $pallet3;
+    text-align: center;
+    margin: 0.5rem 0 1rem 0;
+  }
+
+  .load-more:hover {
+    cursor: pointer;
+    color: lighten($pallet3, 5);
+  }
+
+  .left {
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+
+    .search {
+      position: relative;
+      width: 30rem;
+      margin: 0 5rem;
+
+      input {
+        padding: 0.5rem;
+        font-size: 1.2rem;
+        background: $dark-1;
+        border: none;
+        width: 100%;
+        border: 1px solid $dark-3;
+      }
+
+      .results {
+        position: absolute;
+        width: 100%;
+        background: darken($dark-2,5);
+        max-height: 20rem;
+        overflow-y: auto;
+
+        .result {
+          display: flex;
+          align-items: center;
+          width: 100%;
+          border: 1px solid $dark-3;
+          border-top: none;
+          background: $dark-1;
+
+          img {
+            width: 3rem;
+            height: 3rem;
+            padding: 0.5rem;
+            border-radius: 50%;
+          }
+          
+          h3 {
+            font-size: 1.5rem;
+          }
+        }
+
+        .result:hover {
+          cursor: pointer;
+          background: lighten($dark-1,10);
+        }
+
+        h2 {
+          padding: 1rem;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  .notif {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    .notif-display {
+      position: absolute;
+      top: 3.9rem;
+      right: 1rem;
+      width: 30rem;
+      max-height: 30rem;
+      overflow-y: auto;
+
+      z-index: 20;
+      border: 1px solid #214411;
+      background: $dark-2;
+      cursor: default;
+
+      .highlight-notif {
+        background: $dark-5;
+      }
+
+      .add-to-friend, .liked-post, .added-comment {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        border-top: 1px solid $pallet2;
+        height: 5rem;
+        position: relative;
+        
+        img {
+          width: 2.5rem;
+          height: 2.5rem;
+          border-radius: 50%;
+          margin: 0.5rem;
+        }
+
+        .info {
+          padding: 0.5rem;
+          display: flex;
+          height: 100%;
+          width: 100%;
+
+          p {
+            align-self: center;
+          }
+
+          button {
+            margin-left: 1rem;
+            font-size: 1rem;
+            background: $message;
+          }
+
+          button:hover {
+            background: lighten($message,5);
+          }
+        }
+
+        .delete {
+          position: absolute;
+          right: 1rem;
+          top: 0.5rem;
+          color: $dark-5;
+        }
+
+        .delete:hover {
+          color: $font;
+          cursor: pointer;
+        }
+      }
+
+      h2 {
+        padding: 1rem;
+        text-align: center;
+      }
+    }
+
+    .notif-counter {
+      position: absolute;
+      bottom: 0.5rem;
+      padding: 0.1rem 0.2rem;
+      font-size: 0.9rem;
+      right: 1rem;
+      background: $notif;
+    }
+
+    .icon {
+      width: 4rem;
+      height: 4rem;
+      filter: invert(88%) sepia(3%) saturate(0%) hue-rotate(352deg)
+        brightness(104%) contrast(90%);
+    }
+  }
+
+  .notif:hover {
+    cursor: pointer;
+
+    .notif-counter {
+      background: lighten($notif, 5);
+    }
+
+    .icon {
+      filter: invert(100%) sepia(50%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%) ;
+    }
+  }
+
+  a {
+    color: $font;
+  }
+
+  a:hover {
+    color: lighten($pallet2, 15);
+  }
+
+  h1 {
+    padding: 0.5rem;
+    font-size: 2.5rem;
+  }
+
+  .header-user {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+    a {
+      font-size: 1.5rem;
+      margin: 0.5rem;
+    }
+
+    button {
+      margin: 0.5rem;
+      padding: 0.5rem;
+      font-size: 1.1rem;
+      background: $logout;
+      border-radius: 5px;
+      border: 1px solid #303030;
+    }
+
+    button:hover {
+      cursor: pointer;
+      background: lighten($logout, 5);
+    }
+  }
+}
+
+
+@media only screen and (max-width: 1314px) {
+  .search {
+    margin: 0 2rem !important;
+  }
+
+}
+
+@media only screen and (max-width: 1250px) {
+  .search {
+   position: absolute !important;
+   top: 4rem;
+   left: 50%;
+   transform: translateX(-50%);
+   width: 100vw !important;
+   background: $dark-2;
+   border-top: 2px solid $dark-5;
+   margin: 0 !important;
+   padding: 0.5rem 2rem;
+
+   .results {
+    width: calc(100% - 4rem) !important;
+   }
+  }
+
+  .post-container,.single-post {
+    margin-top: 7.5rem !important;
+  }
+
+  .user-page {
+    margin-top: 4rem !important;
+  }
+
+  .chat {
+    padding-top: 7.5rem !important;
+  }
+}
+
+@media only screen and (max-width: 760px) {
+  .notif-display {
+    width: 30rem !important;
+  }
+}
+
+@media only screen and (max-width: 710px) {
+  .notif-display {
+    width: 25rem !important;
+  }
+}
+
+@media only screen and (max-width: 690px) {
+  header {
+    h1 {
+      font-size: 1.5rem !important;
+    }
+  }
+
+  .header-user {
+    a {
+      font-size: 1.2rem !important;
+    }
+
+    button {
+      font-size: 1rem !important;
+    }
+  }
+}
+
+@media only screen and (max-width: 610px) {
+  .notif-display {
+    width: 20rem !important;
+  }
+}
+
+@media only screen and (max-width: 564px) {
+  .notif-display {
+    width: 18rem !important;
+  }
+}

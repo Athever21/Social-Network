@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+@import './Vars.scss';
+
+* {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  text-decoration: none;
+  color: $font;
+}
+
+body,html {
+  min-height: 100%;
+  background: $dark-1;
+}
+
+html {
+  overflow-y: auto;
+}
