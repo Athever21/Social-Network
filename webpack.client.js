@@ -2,6 +2,7 @@ const webpack = require("webpack");
 const path = require("path");
 const cwd = process.cwd();
 const Dotenv = require('dotenv-webpack');
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
   name: "browser",
@@ -56,4 +57,11 @@ module.exports = {
       "react-dom": "@hot-loader/react-dom",
     },
   },
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        parallel: true
+      })
+    ]
+  }
 };

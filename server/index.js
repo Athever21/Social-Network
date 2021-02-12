@@ -2,6 +2,8 @@ import express from "express";
 import path from "path";
 import mongoose from "mongoose";
 import socketio from "socket.io";
+import cluster from "cluster";
+import {cpus} from "os";
 
 import session from "express-session";
 import helmet from "helmet";
@@ -10,7 +12,6 @@ import redisConnect from "connect-redis";
 
 import template from "../template";
 import { port, mongo_uri, sess_secret } from "./config/config";
-import devBundle from "./devBundle";
 import handleError from "./utils/handleError";
 
 import usersRouter from "./routes/users";
@@ -23,6 +24,7 @@ import messageRouter from "./routes/message";
 import adminRouter from "./routes/admin";
 
 import socket from "./socket-io";
+import redisAdapter from "socket.io-redis";
 
 (async () => {
   try {
@@ -43,11 +45,13 @@ let redisClient = redis.createClient();
 redisClient.on("error", (message) => console.log(message));
 const app = express();
 
+app.enable("trust proxy");
 app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ["'self'"],
+        connectSrc: ["http://localhost:3000","http://localhost:85", "'self'"],
+        defaultSrc: ["http://localhost:3000", "'self'"],
         styleSrc: [
           "'self'",
           "'unsafe-inline'",
@@ -88,7 +92,10 @@ app.use(
     saveUninitialized: false,
   })
 );
-devBundle(app);
+if(process.env.NODE_ENV == "development") {
+  require("./devBundle");
+}
+
 app.disable("x-powered-by");
 app.use(express.json());
 app.use("/dist", express.static(path.join(process.cwd(), "dist")));
@@ -102,16 +109,28 @@ app.use("/api/comments", commentsRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/admin", adminRouter);
 
-app.get("*", (req, res) => {
+app.get("*", async(req, res) => {
   return res.send(template());
 });
 
 app.use(handleError);
 
-const server = app.listen(port, () =>
-  console.log(`Server listening on port ${port}`)
-);
+if(cluster.isMaster) {
+  for(let i=0; i<cpus().length;i++) {
+    cluster.fork();
+  }
 
-const io = socketio(server);
+  cluster.on("exit", (worker) => {
+    console.log(`Worker ${worker.process.pid} died`);
+    cluster.fork();
+  });
+} else {
+  const server = app.listen(port, () => {
+    console.log(`Server listening on port ${port}`)
+    console.log(process.pid);
+  });
 
-socket(io);
+  const io = socketio(server);
+  io.adapter(redisAdapter({ host: "localhost", port: 6379 }));
+  socket(io);
+}
