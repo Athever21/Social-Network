@@ -2,8 +2,8 @@ import express from "express";
 import path from "path";
 import mongoose from "mongoose";
 import socketio from "socket.io";
-// import cluster from "cluster";
-// import { cpus } from "os";
+import cluster from "cluster";
+import { cpus } from "os";
 
 import session from "express-session";
 import helmet from "helmet";
@@ -24,7 +24,7 @@ import messageRouter from "./routes/message";
 import adminRouter from "./routes/admin";
 
 import socket from "./socket-io";
-// import redisAdapter from "socket.io-redis";
+import redisAdapter from "socket.io-redis";
 import { redis_url } from "./config/config";
 
 (async () => {
@@ -116,34 +116,24 @@ app.get("*", async (req, res) => {
 
 app.use(handleError);
 
-// if (cluster.isMaster) {
-//   for (let i = 0; i < cpus().length; i++) {
-//     cluster.fork();
-//   }
+if (cluster.isMaster) {
+  for (let i = 0; i < cpus().length; i++) {
+    cluster.fork();
+  }
 
-//   cluster.on("exit", (worker) => {
-//     console.log(`Worker ${worker.process.pid} died`);
-//     cluster.fork();
-//   });
-// } else {
-//   const server = app.listen(port, () => {
-//     console.log(`Server listening on port ${port}`);
-//     console.log(process.pid);
-//   });
+  cluster.on("exit", (worker) => {
+    console.log(`Worker ${worker.process.pid} died`);
+    cluster.fork();
+  });
+} else {
+  const server = app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+    console.log(process.pid);
+  });
 
-//   const redisA = redis.createClient({url: redis_url});
+  const redisA = redis.createClient({url: redis_url});
 
-//   const io = socketio(server);
-//   io.adapter(redisAdapter({ pubClient: redisA, subClient: redisA }));
-//   socket(io);
-// }
-const server = app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-  // console.log(process.pid);
-});
-
-// const redisA = redis.createClient({url: redis_url});
-
-const io = socketio(server);
-// io.adapter(redisAdapter({ pubClient: redisA, subClient: redisA }));
-socket(io);
+  const io = socketio(server);
+  io.adapter(redisAdapter({ host: redisA, port: redisA }));
+  socket(io);
+}
