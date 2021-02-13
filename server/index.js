@@ -118,8 +118,9 @@ app.get("*", async(req, res) => {
 
 app.use(handleError);
 
-const u = new URL(redis_url);
-console.log(u);
+const [...hr,rp] = redis_url.split(":");
+
+console.log(hr,rp);
 
 if(cluster.isMaster) {
   for(let i=0; i<cpus().length;i++) {
@@ -135,8 +136,8 @@ if(cluster.isMaster) {
     console.log(`Server listening on port ${port}`)
     console.log(process.pid);
   });
-
+  
   const io = socketio(server);
-  io.adapter(redisAdapter({localhost: u.hostname, port: u.port}));
+  io.adapter(redisAdapter({localhost: hr.join(":"), port: rp}));
   socket(io);
 }
