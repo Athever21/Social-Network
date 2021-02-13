@@ -3,7 +3,7 @@ import path from "path";
 import mongoose from "mongoose";
 import socketio from "socket.io";
 import cluster from "cluster";
-import {cpus} from "os";
+import { cpus } from "os";
 
 import session from "express-session";
 import helmet from "helmet";
@@ -25,8 +25,8 @@ import adminRouter from "./routes/admin";
 
 import socket from "./socket-io";
 import redisAdapter from "socket.io-redis";
-import {redis_url} from "./config/config";
-import {URL} from "url";
+import { redis_url } from "./config/config";
+import { URL } from "url";
 import { url } from "inspector";
 
 (async () => {
@@ -44,7 +44,7 @@ import { url } from "inspector";
 })();
 
 let RedisStore = redisConnect(session);
-let redisClient = redis.createClient({url: redis_url});
+let redisClient = redis.createClient({ url: redis_url });
 redisClient.on("error", (message) => console.log(message));
 const app = express();
 
@@ -53,7 +53,7 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        connectSrc: ["http://localhost:3000","http://localhost:85", "'self'"],
+        connectSrc: ["http://localhost:3000", "http://localhost:85", "'self'"],
         defaultSrc: ["http://localhost:3000", "'self'"],
         styleSrc: [
           "'self'",
@@ -95,7 +95,7 @@ app.use(
     saveUninitialized: false,
   })
 );
-if(process.env.NODE_ENV == "development") {
+if (process.env.NODE_ENV == "development") {
   require("./devBundle");
 }
 
@@ -112,18 +112,19 @@ app.use("/api/comments", commentsRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/admin", adminRouter);
 
-app.get("*", async(req, res) => {
+app.get("*", async (req, res) => {
   return res.send(template());
 });
 
 app.use(handleError);
 
-const [...hr,rp] = redis_url.split(":");
+const r = redis_url.split(":");
 
-console.log(hr,rp);
+const rp = r[r.length - 1];
+const hr = r.filter((x) => x !== rp).join(":");
 
-if(cluster.isMaster) {
-  for(let i=0; i<cpus().length;i++) {
+if (cluster.isMaster) {
+  for (let i = 0; i < cpus().length; i++) {
     cluster.fork();
   }
 
@@ -133,11 +134,11 @@ if(cluster.isMaster) {
   });
 } else {
   const server = app.listen(port, () => {
-    console.log(`Server listening on port ${port}`)
+    console.log(`Server listening on port ${port}`);
     console.log(process.pid);
   });
-  
+
   const io = socketio(server);
-  io.adapter(redisAdapter({localhost: hr.join(":"), port: rp}));
+  io.adapter(redisAdapter({ localhost: hr, port: rp }));
   socket(io);
 }
