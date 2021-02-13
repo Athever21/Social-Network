@@ -134,6 +134,6 @@ if (cluster.isMaster) {
   const redisA = redis.createClient({url: redis_url});
 
   const io = socketio(server);
-  io.adapter(redisAdapter(redisA));
+  io.adapter(redisAdapter({ pubClient: redisA, subClient: redisA }));
   socket(io);
 }
