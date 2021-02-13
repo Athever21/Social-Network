@@ -140,6 +140,6 @@ if (cluster.isMaster) {
   });
 
   const io = socketio(server);
-  io.adapter(redisAdapter({ hostname: hr, port: rp }));
+  io.adapter(redisAdapter({ host: hr, port: rp }));
   socket(io);
 }
