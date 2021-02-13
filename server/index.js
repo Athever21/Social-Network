@@ -26,8 +26,6 @@ import adminRouter from "./routes/admin";
 import socket from "./socket-io";
 import redisAdapter from "socket.io-redis";
 import { redis_url } from "./config/config";
-import { URL } from "url";
-import { url } from "inspector";
 
 (async () => {
   try {
@@ -118,12 +116,6 @@ app.get("*", async (req, res) => {
 
 app.use(handleError);
 
-const r = redis_url.split(":");
-
-const rp = r[r.length - 1];
-const hr = r.filter((x) => x !== rp).join(":");
-console.log(rp,hr);
-
 if (cluster.isMaster) {
   for (let i = 0; i < cpus().length; i++) {
     cluster.fork();
@@ -139,7 +131,9 @@ if (cluster.isMaster) {
     console.log(process.pid);
   });
 
+  const redisA = redis.createClient({url: redis_url});
+
   const io = socketio(server);
-  io.adapter(redisAdapter({ host: hr, port: rp }));
+  io.adapter(redisAdapter(redisA));
   socket(io);
 }
