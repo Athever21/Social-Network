@@ -1,14 +1,16 @@
 import {google} from 'googleapis';
+import {google_private_key,google_email} from "./config/config";
+
 
 const scopes = [
   'https://www.googleapis.com/auth/drive'
 ];
 
-const credentials = require('./config/credentials.json');
+// const credentials = require('./config/credentials.json');
 
 const auth = new google.auth.JWT(
-  credentials.client_email,null,
-  credentials.private_key,scopes
+  google_email,null,
+  google_private_key,scopes
 );
 
 const drive = google.drive({
