@@ -122,6 +122,7 @@ const r = redis_url.split(":");
 
 const rp = r[r.length - 1];
 const hr = r.filter((x) => x !== rp).join(":");
+console.log(rp,hr);
 
 if (cluster.isMaster) {
   for (let i = 0; i < cpus().length; i++) {
@@ -139,6 +140,6 @@ if (cluster.isMaster) {
   });
 
   const io = socketio(server);
-  io.adapter(redisAdapter({ localhost: hr, port: rp }));
+  io.adapter(redisAdapter({ hostname: hr, port: rp }));
   socket(io);
 }
