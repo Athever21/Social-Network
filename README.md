@@ -1,4 +1,4 @@
-# Social Neworkt
+# Social Network
 
 Site made for learning purposes.
 Testing accounts:
